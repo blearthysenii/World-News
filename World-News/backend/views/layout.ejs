@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title><%= title || 'World News' %></title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header>
+    <h1>World News</h1>
+    <nav>
+      <a href="/register">Register</a> | 
+      <a href="/login">Login</a> | 
+      <a href="/news">News</a>
+    </nav>
+  </header>
+
+  <main>
+    <%- body %>
+  </main>
+
+  <footer>
+    <p>© 2025 World News</p>
+  </footer>
+</body>
+</html>

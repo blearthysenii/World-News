@@ -1,39 +1,28 @@
 const express = require('express');
-const Comment = require('../models/Comment');
-const authMiddleware = require('../middleware/authMiddleware');
-
 const router = express.Router();
+const Comment = require('../models/Comment');
 
-// Marr të gjitha komentet për një lajm
-router.get('/news/:newsId', async (req, res) => {
-  try {
-    const comments = await Comment.find({ newsId: req.params.newsId })
-      .populate('authorId', 'username')
-      .sort({ createdAt: -1 });
-    res.json(comments);
-  } catch (err) {
-    console.error('Error in GET /comments/news/:newsId:', err);
-    res.status(500).json({ message: 'Server error' });
+// Shto koment
+router.post('/add', async (req, res) => {
+  const { content, newsId } = req.body;
+
+  // Kontrollo nëse ka content, newsId dhe user i loguar (req.user duhet të vijë nga middleware)
+  if (!content || !newsId || !req.user) {
+    return res.status(400).send('All fields required or user not logged in');
   }
-});
 
-// POST një koment të ri për një lajm
-router.post('/news/:newsId', authMiddleware, async (req, res) => {
   try {
-    const { text } = req.body;
-    if (!text) {
-      return res.status(400).json({ message: 'Comment text is required' });
-    }
-    const comment = new Comment({
-      newsId: req.params.newsId,
-      authorId: req.user.id,
-      text,
+    const newComment = new Comment({
+      content,
+      newsId,
+      authorId: req.user.id, // Merr id-në nga token JWT e verifikuar
     });
-    await comment.save();
-    res.status(201).json(comment);
+
+    await newComment.save();
+    res.redirect(`/news/${newsId}`);
   } catch (err) {
-    console.error('Error in POST /comments/news/:newsId:', err);
-    res.status(500).json({ message: 'Server error' });
+    console.error(err);
+    res.status(500).send('Failed to add comment');
   }
 });
 

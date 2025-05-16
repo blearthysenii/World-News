@@ -1,0 +1,186 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>World News</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #eef2f7;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    header {
+      background-color: #1a1a1a;;
+      color: white;
+      padding: 23px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.19);
+      margin-bottom: 30px; 
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.09);
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 15px;
+      font-weight: bold;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto 30px;
+      background: #fff;
+      padding: 25px 30px;
+      border-radius: 10px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+    }
+     h1{
+      color: #fff;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+     h2 {
+      color: #2c3e50;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    .news-form {
+      margin-bottom: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .news-form input,
+    .news-form textarea {
+      padding: 10px 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+      resize: none;
+      font-family: inherit;
+    }
+
+    .news-form button {
+      width: 140px;
+      padding: 10px 0;
+      background-color: #2980b9;
+      color: white;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .news-form button:hover {
+      background-color: #1c5980;
+    }
+
+    /* Kuti ku shfaqen lajmet me scroll nëse ka shumë */
+    .news-list {
+      max-height: 350px; /* sa lart të duash */
+      overflow-y: auto;
+      padding-right: 10px;
+      margin-bottom: 20px;
+    }
+
+    .news-item {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 18px 22px;
+      margin-bottom: 18px;
+      background: #f9fafc;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      cursor: pointer;
+    }
+
+    .news-item:hover {
+      background: #fff;
+      box-shadow: 0 8px 20px rgba(44, 62, 80, 0.12);
+      transform: translateY(-3px);
+    }
+
+    .news-item a {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #2980b9;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .news-item a:hover {
+      color: #1c5980;
+      text-decoration: underline;
+    }
+
+    .news-date {
+      display: block;
+      margin-top: 6px;
+      font-size: 0.85rem;
+      color: #7f8c8d;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px 0;
+      font-size: 0.9rem;
+      color: #95a5a6;
+      border-top: 1px solid #ddd;
+      margin-top: 40px;
+    }
+    header:hover{
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+
+  <div class="container">
+
+    <form action="/news/create" method="POST" class="news-form">
+      <input type="text" name="title" placeholder="News Title" required />
+      <textarea name="content" placeholder="News Content" rows="4" required></textarea>
+      <button type="submit">Create News</button>
+    </form>
+
+    <h2>Latest News</h2>
+    <div class="news-list">
+      <% if (news && news.length) { %>
+        <% news.forEach(n => { %>
+          <div class="news-item" onclick="window.location.href='/news/<%= n._id %>'">
+            <a href="/news/<%= n._id %>"><%= n.title %></a>
+            <small class="news-date"><%= n.createdAt ? new Date(n.createdAt).toLocaleDateString() : 'No Date' %></small>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <p>No news found.</p>
+      <% } %>
+    </div>
+
+    <footer>Copyright © 2025</footer>
+  </div>
+
+</body>
+</html>

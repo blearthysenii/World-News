@@ -2,16 +2,18 @@
 const jwt = require('jsonwebtoken');
 
 const authMiddleware = (req, res, next) => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
+  const token = req.cookies.token;  // lexon token nga cookie
   if (!token) {
-    return res.status(401).json({ message: 'Authorization token missing' });
+    req.user = null;  // lejoje të vazhdojë, por nuk ka user
+    return next();
   }
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded; // ruan info të user-it në request
     next();
   } catch (err) {
-    return res.status(401).json({ message: 'Invalid token' });
+    req.user = null; // token i pavlefshëm
+    next();
   }
 };
 

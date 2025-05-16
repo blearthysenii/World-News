@@ -1,93 +1,101 @@
-World News Backend API
-This is the backend for a World News application built with Node.js, Express, and MongoDB. It provides user authentication, news management, and commenting functionality via a RESTful API.
+# World News
 
-Features
-User registration and login with JWT authentication
+## Project Description
+This is a simple web application for publishing news articles and commenting on them. Users can register, log in, view news articles, post new news, and add comments to each article.
 
-Create, read, update, and delete news articles
+The application uses Node.js, Express, MongoDB, and EJS templating engine.
 
-Add and retrieve comments on news articles
+---
 
-Secure routes protected with authentication middleware
+## Key Features
+- User registration and authentication using email and password (hashed with bcrypt)
+- JWT-based session management and authorization
+- Authorized users can add new news articles
+- Display news articles with a list of comments for each article
+- Logged-in users can post comments
+- Comments and news lists support vertical scrolling for ease of navigation
+- Middleware for protecting sensitive routes
+- Cookie parser used for storing JWT tokens in HTTP-only cookies
 
-Technologies Used
-Node.js
+---
 
-Express.js
+## Technologies Used
+- Node.js
+- Express.js
+- MongoDB with Mongoose
+- EJS (Embedded JavaScript Templates)
+- bcryptjs (for password hashing)
+- jsonwebtoken (JWT for authentication)
+- cookie-parser (cookie management)
+- express-ejs-layouts (for layout support in EJS)
 
-MongoDB with Mongoose
+---
 
-JSON Web Tokens (JWT)
+## Project Structure
+/config
+db.js # MongoDB connection configuration
+/models
+User.js # User model
+News.js # News model
+Comment.js # Comment model
+/routes
+authRoutes.js # Routes for registration and login
+newsRoutes.js # Routes for news articles
+commentRoutes.js# Routes for comments
+/middleware
+authMiddleware.js # Middleware to verify JWT token
+/views # EJS templates
+/public # Static files such as CSS, JS, images
+server.js # Main server entry point
+.env # Environment variables (JWT_SECRET, MongoDB URI, PORT)
 
-bcryptjs for password hashing
+# How to Use
 
-dotenv for environment variables
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/username/world-news-app.git
+   cd world-news-app
 
-Project Structure
+   Install dependencies:
 
-backend/
-│
-├── config/
-│   └── db.js            # MongoDB connection setup
-├── middleware/
-│   └── authMiddleware.js # JWT authentication middleware
-├── models/
-│   ├── User.js          # User schema
-│   ├── News.js          # News article schema
-│   └── Comment.js       # Comment schema
-├── routes/
-│   ├── authRoutes.js    # Authentication routes (register, login)
-│   ├── newsRoutes.js    # News CRUD routes
-│   └── commentRoutes.js # Comment routes
-├── .env                 # Environment variables
-├── server.js            # Main server file
-└── package.json
+    npm install 
 
-Environment Variables (.env)
+    Start the server:
+    npm start
+     
+    Open your browser at http://localhost:5000
+    
+    
+    Authentication Flow
+Users register with username, email, and password.
 
-PORT=5000
-MONGO_URI=mongodb://localhost:27017/worldNewsDB
-JWT_SECRET=myverysecretkey
+Passwords are securely hashed with bcrypt.
 
-Installation & Setup
+On login, a JWT token is generated and stored in an HTTP-only cookie.
 
-npm install
-npm start
+authMiddleware protects routes that require authorization.
 
-API Endpoints
-Authentication
-POST /api/auth/register — Register a new user
+res.locals.user is used in EJS templates to access logged-in user info.
 
-POST /api/auth/login — Login and receive JWT token
+Comments Functionality
+Comments are stored in the database with references to the related news article and author.
 
-News
-POST /api/news — Create a news article (Auth required)
+The comment list container supports vertical scrolling for easier viewing of many comments.
 
-GET /api/news — Get all news articles
+The comment textarea allows scrolling within itself if the content is long.
 
-GET /api/news/:id — Get a news article by ID
+Possible Improvements
+Advanced validation on both front-end and back-end
 
-PUT /api/news/:id — Update a news article (Auth required, only author)
+Adding editing and deleting functionality for news and comments
 
-DELETE /api/news/:id — Delete a news article (Auth required, only author)
+Front-end framework integration for better interactivity
 
-Comments
-GET /api/comments/news/:newsId — Get all comments for a news article
+Pagination for news articles and comments
 
-POST /api/comments/news/:newsId — Add a comment to a news article (Auth required)
+Role-based access control (e.g., admin, regular user)
 
-Authentication Middleware
-Protects routes by validating JWT tokens sent in the Authorization header.
+For questions or suggestions, feel free to contact me!
 
-Testing
-Use Postman or similar tools to test the API. Example requests:
-
-Register User
-
-Login User (get JWT)
-
-Create News with JWT
-
-Fetch News and Comments
-
-Add Comment with JWT
+Bleart Hyseni
+May 2025
