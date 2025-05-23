@@ -24,8 +24,9 @@ function Login({ onLoginSuccess }) {
         setError(data.message || 'Login failed');
       } else {
         console.log('Login successful', data);
-        onLoginSuccess(); // tani funksionon sepse e kemi marrë si prop
-        navigate('/NewsList');
+        onLoginSuccess();
+        localStorage.setItem('token', data.token);
+        navigate('/news');
       }
     } catch (err) {
       setError('Error connecting to server');

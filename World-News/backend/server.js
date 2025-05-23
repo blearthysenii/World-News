@@ -10,6 +10,7 @@ const jwt = require('jsonwebtoken');
 const authMiddleware = require('./middleware/authMiddleware');
 const cors = require('cors');
 
+
 require('dotenv').config();
 
 const app = express();
@@ -41,6 +42,7 @@ const attachUser = (req, res, next) => {
   }
   next();
 };
+
 
 app.use(attachUser);
 

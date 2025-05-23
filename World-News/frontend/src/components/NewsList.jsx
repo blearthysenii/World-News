@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";  // importo useNavigate
 
 function NewsList() {
   const [news, setNews] = useState([]);
@@ -9,25 +10,32 @@ function NewsList() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
+  const navigate = useNavigate();  // initializo navigate
+
   useEffect(() => {
     fetchNews();
   }, []);
 
-  const fetchNews = () => {
+  const fetchNews = async () => {
     setLoading(true);
-    fetch("http://localhost:5000/api/news")
-      .then((res) => res.json())
-      .then((data) => {
-        setNews(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching news:", err);
-        setLoading(false);
+    const token = localStorage.getItem("token");
+
+    try {
+      const res = await fetch("http://localhost:5000/api/news", {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
+      if (!res.ok) throw new Error("Failed to fetch news");
+      const data = await res.json();
+      setNews(data);
+    } catch (err) {
+      console.error("Error fetching news:", err);
+      setErrorMsg("Failed to load news.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleCreateNews = (e) => {
+  const handleCreateNews = async (e) => {
     e.preventDefault();
     setErrorMsg("");
 
@@ -36,39 +44,50 @@ function NewsList() {
       return;
     }
 
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setErrorMsg("You must be logged in to create news.");
+      return;
+    }
+
     setIsSubmitting(true);
 
-    fetch("http://localhost:5000/api/news", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`, // Shto tokenin këtu
-      },
-      body: JSON.stringify({
-        title: newTitle,
-        content: newContent,
-        category: newCategory,
-      }),
-    })
-      .then(async (res) => {
-        if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(errorData.message || "Failed to create news");
-        }
-        return res.json();
-      })
-      .then((createdNews) => {
-        setNews([createdNews, ...news]); // Shto lajm të ri në fillim
-        setNewTitle("");
-        setNewContent("");
-        setNewCategory("");
-        setIsSubmitting(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setErrorMsg(err.message || "Error creating news, try again.");
-        setIsSubmitting(false);
+    try {
+      const res = await fetch("http://localhost:5000/api/news", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title: newTitle,
+          content: newContent,
+          category: newCategory,
+        }),
       });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Failed to create news");
+      }
+
+      const createdNews = await res.json();
+      setNews((prevNews) => [createdNews, ...prevNews]);
+      setNewTitle("");
+      setNewContent("");
+      setNewCategory("");
+    } catch (err) {
+      console.error(err);
+      setErrorMsg(err.message || "Error creating news, try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Funksion për të naviguar te faqja e komenteve për lajmin me id specifik
+  const goToComments = (newsId) => {
+    navigate(`/comments/${newsId}`);
   };
 
   if (loading) return <p style={{ textAlign: "center" }}>Loading news...</p>;
@@ -125,12 +144,27 @@ function NewsList() {
                 By: <strong>{item.author}</strong>
               </p>
             )}
-            {/* Nëse nuk ka publishedAt, përdor createdAt */}
             {(item.publishedAt || item.createdAt) && (
               <p style={styles.date}>
                 Published: {new Date(item.publishedAt || item.createdAt).toLocaleString()}
               </p>
             )}
+            {/* Butoni Comment */}
+            <button
+              onClick={() => goToComments(item._id)}
+              style={{
+                marginTop: "12px",
+                padding: "10px 16px",
+                backgroundColor: "#4a90e2",
+                color: "white",
+                border: "none",
+                borderRadius: "6px",
+                cursor: "pointer",
+                fontWeight: "600",
+              }}
+            >
+              Comment
+            </button>
           </div>
         ))
       )}

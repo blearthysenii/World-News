@@ -1,8 +1,13 @@
-import React, { useState } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-import Login from "./components/Login";
-import Register from "./components/Register";
-import NewsList from "./components/NewsList";
+// src/App.js
+import React, { useState } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import NewsList from './components/NewsList';
+import NewsDetails from './components/NewsDetails';
+import Comments from './components/Comments';  // importo Comments
+import Login from './components/Login';
+import Register from './components/Register';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -12,36 +17,39 @@ function App() {
 
   return (
     <>
-      {isLoggedIn && <button onClick={handleLogout}>Logout</button>}
+      <Header isLoggedIn={isLoggedIn} onLogout={handleLogout} />
 
       <Routes>
         <Route
-          path="/Login"
+          path="/login"
+          element={<Login onLoginSuccess={handleLoginSuccess} />}
+        />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/news"
           element={
-            isLoggedIn ? (
-              <Navigate to="/NewsList" />
-            ) : (
-              <Login onLoginSuccess={handleLoginSuccess} />
-            )
+            isLoggedIn ? <NewsList /> : <Navigate to="/login" replace />
           }
         />
         <Route
-          path="/Register"
+          path="/news/:id"
           element={
-            isLoggedIn ? <Navigate to="/NewsList" /> : <Register />
+            isLoggedIn ? <NewsDetails /> : <Navigate to="/login" replace />
           }
         />
         <Route
-          path="/NewsList"
+          path="/comments/:id"
           element={
-            isLoggedIn ? <NewsList /> : <Navigate to="/Login" />
+            isLoggedIn ? <Comments /> : <Navigate to="/login" replace />
           }
         />
         <Route
-          path="*"
-          element={<Navigate to={isLoggedIn ? "/NewsList" : "/Login"} />}
+          path="/"
+          element={<Navigate to={isLoggedIn ? "/news" : "/login"} replace />}
         />
       </Routes>
+
+      <Footer />
     </>
   );
 }
