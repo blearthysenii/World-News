@@ -6,6 +6,10 @@ const router = express.Router();
 
 // CREATE news
 router.post('/', authMiddleware, async (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ message: 'You must be logged in to create news' });
+  }
+
   try {
     const { title, content, category } = req.body;
 
@@ -30,6 +34,10 @@ router.post('/', authMiddleware, async (req, res) => {
 
 // UPDATE news
 router.put('/:id', authMiddleware, async (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ message: 'You must be logged in to update news' });
+  }
+
   try {
     const news = await News.findById(req.params.id);
     if (!news) return res.status(404).json({ message: 'News not found' });
@@ -57,6 +65,10 @@ router.put('/:id', authMiddleware, async (req, res) => {
 
 // DELETE news
 router.delete('/:id', authMiddleware, async (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ message: 'You must be logged in to delete news' });
+  }
+
   try {
     const news = await News.findById(req.params.id);
     if (!news) return res.status(404).json({ message: 'News not found' });
@@ -75,6 +87,7 @@ router.delete('/:id', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 // GET all news
 router.get('/', async (req, res) => {
   try {
@@ -95,6 +108,5 @@ router.get('/:id', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
-
 
 module.exports = router;
