@@ -1,10 +1,13 @@
 // src/components/Comments.jsx
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Comments = ({ newsId }) => {
   const [comments, setComments] = useState([]);
   const [content, setContent] = useState("");
   const [error, setError] = useState("");
+
+  const navigate = useNavigate();
 
   // Fetch comments për lajmin
   useEffect(() => {
@@ -32,6 +35,10 @@ const Comments = ({ newsId }) => {
     }
   };
 
+  const handleBackClick = () => {
+    navigate(-1); // ose navigate('/news') nëse do kthim në rrugën e lajmeve
+  };
+
   const styles = {
     container: {
       maxWidth: 550,
@@ -42,6 +49,16 @@ const Comments = ({ newsId }) => {
       borderRadius: 20,
       border: "0.1px solid #ccc",
       boxShadow: "0 2px 10px rgba(0,0,0,0.9)",
+      fontFamily: "inherit",
+    },
+    backArrow: {
+      cursor: "pointer",
+      fontSize: 28,
+      color: "#2980b9",
+      marginBottom: 20,
+      userSelect: "none",
+      transition: "color 0.2s ease",
+      display: "inline-block",
     },
     header: {
       textAlign: "center",
@@ -111,6 +128,17 @@ const Comments = ({ newsId }) => {
 
   return (
     <div style={styles.container}>
+      <div
+        style={styles.backArrow}
+        onClick={handleBackClick}
+        title="Back to News List"
+        role="button"
+        tabIndex={0}
+        onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') handleBackClick(); }}
+      >
+        ←
+      </div>
+
       <h3 style={styles.header}>Comments</h3>
 
       <form style={styles.form} onSubmit={handleSubmit}>

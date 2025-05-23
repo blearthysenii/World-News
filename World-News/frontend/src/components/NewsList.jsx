@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";  // importo useNavigate
+import { useNavigate } from "react-router-dom";
 
 function NewsList() {
   const [news, setNews] = useState([]);
@@ -10,7 +10,7 @@ function NewsList() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  const navigate = useNavigate();  // initializo navigate
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchNews();
@@ -28,7 +28,7 @@ function NewsList() {
       const data = await res.json();
       setNews(data);
     } catch (err) {
-      console.error("Error fetching news:", err);
+      console.error(err);
       setErrorMsg("Failed to load news.");
     } finally {
       setLoading(false);
@@ -45,7 +45,6 @@ function NewsList() {
     }
 
     const token = localStorage.getItem("token");
-
     if (!token) {
       setErrorMsg("You must be logged in to create news.");
       return;
@@ -85,12 +84,16 @@ function NewsList() {
     }
   };
 
-  // Funksion për të naviguar te faqja e komenteve për lajmin me id specifik
   const goToComments = (newsId) => {
     navigate(`/comments/${newsId}`);
   };
 
-  if (loading) return <p style={{ textAlign: "center" }}>Loading news...</p>;
+  if (loading)
+    return (
+      <p style={{ textAlign: "center", fontSize: 18, marginTop: 40 }}>
+        Loading news...
+      </p>
+    );
 
   return (
     <div style={styles.container}>
@@ -103,12 +106,14 @@ function NewsList() {
           value={newTitle}
           onChange={(e) => setNewTitle(e.target.value)}
           style={styles.input}
+          autoComplete="off"
         />
         <textarea
           placeholder="News Content"
           value={newContent}
           onChange={(e) => setNewContent(e.target.value)}
           style={styles.textarea}
+          rows={5}
         />
         <input
           type="text"
@@ -116,52 +121,55 @@ function NewsList() {
           value={newCategory}
           onChange={(e) => setNewCategory(e.target.value)}
           style={styles.input}
+          autoComplete="off"
         />
         {errorMsg && <p style={styles.error}>{errorMsg}</p>}
-        <button type="submit" disabled={isSubmitting} style={styles.button}>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          style={{
+            ...styles.button,
+            opacity: isSubmitting ? 0.7 : 1,
+            cursor: isSubmitting ? "not-allowed" : "pointer",
+          }}
+        >
           {isSubmitting ? "Submitting..." : "Create News"}
         </button>
       </form>
 
-      <h2 style={{ ...styles.header, marginTop: "40px" }}>Latest News</h2>
+      <h2 style={{ ...styles.header, marginTop: 50 }}>Latest News</h2>
 
       {news.length === 0 ? (
-        <p>No news found.</p>
+        <p style={{ textAlign: "center", fontSize: 16 }}>No news found.</p>
       ) : (
         news.map((item) => (
           <div key={item._id} style={styles.card}>
             <h3 style={styles.title}>{item.title}</h3>
+
             <div style={styles.contentBox}>
               <p style={styles.contentText}>
                 {item.content || item.description || "No content available."}
               </p>
             </div>
-            <p style={{ fontStyle: "italic", color: "#888", marginBottom: "8px" }}>
-              Category: {item.category || "No category"}
-            </p>
+
+            <p style={styles.category}>Category: {item.category || "No category"}</p>
+
             {item.author && (
               <p style={styles.author}>
                 By: <strong>{item.author}</strong>
               </p>
             )}
+
             {(item.publishedAt || item.createdAt) && (
               <p style={styles.date}>
                 Published: {new Date(item.publishedAt || item.createdAt).toLocaleString()}
               </p>
             )}
-            {/* Butoni Comment */}
+
             <button
               onClick={() => goToComments(item._id)}
-              style={{
-                marginTop: "12px",
-                padding: "10px 16px",
-                backgroundColor: "#4a90e2",
-                color: "white",
-                border: "none",
-                borderRadius: "6px",
-                cursor: "pointer",
-                fontWeight: "600",
-              }}
+              style={styles.commentButton}
+              aria-label={`Comment on ${item.title}`}
             >
               Comment
             </button>
@@ -175,90 +183,120 @@ function NewsList() {
 const styles = {
   container: {
     maxWidth: "900px",
-    margin: "20px auto",
+    margin: "40px auto",
     padding: "0 20px",
-    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-    color: "#333",
+    fontFamily: "'Poppins', sans-serif",
+    color: "#222",
+    backgroundColor: "#f9fbfc",
   },
   header: {
     textAlign: "center",
-    color: "#4a90e2",
-    marginBottom: "30px",
+    color: "#1e3a8a",
+    marginBottom: 30,
     fontWeight: "700",
-    fontSize: "2.2rem",
+    fontSize: "2.4rem",
+    letterSpacing: "0.05em",
   },
   form: {
     display: "flex",
     flexDirection: "column",
-    gap: "15px",
-    marginBottom: "40px",
+    gap: 20,
+    marginBottom: 50,
+    backgroundColor: "white",
+    padding: 25,
+    borderRadius: 15,
+    boxShadow: "0 6px 15px rgba(30, 58, 138, 0.1)",
   },
   input: {
-    padding: "12px",
-    fontSize: "1.1rem",
-    borderRadius: "8px",
-    border: "1px solid #ccc",
+    padding: 14,
+    fontSize: 16,
+    borderRadius: 12,
+    border: "1.8px solid #cbd5e1",
     outline: "none",
     transition: "border-color 0.3s",
+    fontWeight: 500,
   },
   textarea: {
-    padding: "12px",
-    fontSize: "1.1rem",
-    borderRadius: "8px",
-    border: "1px solid #ccc",
+    padding: 14,
+    fontSize: 16,
+    borderRadius: 12,
+    border: "1.8px solid #cbd5e1",
     outline: "none",
-    minHeight: "100px",
+    fontWeight: 500,
     resize: "vertical",
     transition: "border-color 0.3s",
   },
   button: {
-    padding: "12px",
-    fontSize: "1.2rem",
-    backgroundColor: "#4a90e2",
+    padding: "14px 0",
+    fontSize: 18,
+    fontWeight: "700",
+    backgroundColor: "#2563eb",
     color: "white",
     border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-    fontWeight: "600",
+    borderRadius: 14,
+    transition: "background-color 0.3s ease",
+    boxShadow: "0 4px 14px rgba(37, 99, 235, 0.5)",
   },
   error: {
-    color: "red",
-    fontWeight: "600",
+    color: "#dc2626",
+    fontWeight: "700",
+    textAlign: "center",
   },
   card: {
-    backgroundColor: "#fefefe",
-    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-    borderRadius: "10px",
-    padding: "20px",
-    marginBottom: "25px",
+    backgroundColor: "white",
+    boxShadow: "0 10px 25px rgba(30, 58, 138, 0.12)",
+    borderRadius: 20,
+    padding: 25,
+    marginBottom: 30,
+    transition: "transform 0.3s ease, box-shadow 0.3s ease",
+    cursor: "default",
   },
   title: {
-    marginBottom: "12px",
-    fontSize: "1.6rem",
-    color: "#222",
+    fontSize: "1.8rem",
+    fontWeight: "700",
+    color: "#1e40af",
+    marginBottom: 15,
   },
   contentBox: {
-    maxHeight: "140px",
+    maxHeight: 160,
     overflowY: "auto",
-    padding: "10px",
-    backgroundColor: "#f0f4f8",
-    borderRadius: "8px",
-    boxShadow: "inset 0 0 6px rgba(0,0,0,0.05)",
-    marginBottom: "12px",
+    padding: 15,
+    backgroundColor: "#eff6ff",
+    borderRadius: 15,
+    boxShadow: "inset 0 0 10px rgba(30, 64, 175, 0.1)",
+    marginBottom: 15,
   },
   contentText: {
-    fontSize: "1rem",
-    lineHeight: "1.5",
-    color: "#555",
+    fontSize: 16,
+    lineHeight: 1.6,
+    color: "#374151",
+    whiteSpace: "pre-line",
+  },
+  category: {
+    fontStyle: "italic",
+    color: "#6b7280",
+    marginBottom: 8,
   },
   author: {
-    fontSize: "0.9rem",
-    color: "#666",
-    marginBottom: "4px",
+    fontSize: 14,
+    color: "#4b5563",
+    marginBottom: 6,
   },
   date: {
-    fontSize: "0.8rem",
-    color: "#999",
+    fontSize: 13,
+    color: "#9ca3af",
+  },
+  commentButton: {
+    marginTop: 18,
+    padding: "12px 24px",
+    backgroundColor: "#2563eb",
+    color: "white",
+    border: "none",
+    borderRadius: 14,
+    fontWeight: 700,
+    fontSize: 16,
+    cursor: "pointer",
+    transition: "background-color 0.3s ease",
   },
 };
 
