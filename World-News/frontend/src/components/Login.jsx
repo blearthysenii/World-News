@@ -127,7 +127,7 @@ function Login({ onLoginSuccess }) {
           onMouseEnter={() => setIsButtonHovered(true)}
           onMouseLeave={() => setIsButtonHovered(false)}
         >
-          Login
+          Login - World News
         </button>
       </form>
     </div>

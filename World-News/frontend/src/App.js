@@ -21,12 +21,13 @@ const mainContentStyle = {
   flexDirection: 'column',
 };
 
-const contentWrapperStyle = {
+const centeredWrapperStyle = {
   flexGrow: 1,
-  width: '100%',
-  maxWidth: '1200px',   // max gjerësia e përmbajtjes
-  margin: '0 auto',     // qendro përmbajtjen
-  padding: '20px',      // hapësirë rreth përmbajtjes
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  minHeight: 'calc(100vh - 120px)', 
+  padding: '20px',
   boxSizing: 'border-box',
 };
 

@@ -1,6 +1,7 @@
 // src/components/Comments.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import '../index.css';
 
 const Comments = ({ newsId }) => {
   const [comments, setComments] = useState([]);
