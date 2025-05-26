@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from "react-router-dom";
 
 const headerStyle = {
-  backgroundColor: "#1a1a1a",
+  background: "linear-gradient(135deg, #1a1a1a, #2a2a2a)",
   color: "white",
   padding: "20px 40px",
   display: "flex",
@@ -38,7 +38,7 @@ const linkStyle = {
 
 const linkHoverStyle = {
   backgroundColor: "#333",
-  color: "#1e90ff",
+  color: "darkblue",
 };
 
 const buttonStyle = {

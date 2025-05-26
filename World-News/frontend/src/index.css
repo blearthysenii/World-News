@@ -1,11 +1,22 @@
 /* index.css */
+/* index.css */
 body, html, #root {
   height: 100%;
   margin: 0;
-  background: linear-gradient(135deg, #a0cfff, #000000);
+ background: linear-gradient(135deg, #000000, #1e3c72)
+
+
+;
+
+
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: white;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  
+
 }
+
 
 input {
   font-family: inherit;
@@ -14,6 +25,7 @@ input {
 button {
   font-family: inherit;
 }
+
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',

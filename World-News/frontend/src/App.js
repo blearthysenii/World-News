@@ -1,5 +1,5 @@
 // src/App.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -21,21 +21,32 @@ const mainContentStyle = {
   flexDirection: 'column',
 };
 
-const centeredWrapperStyle = {
+const contentWrapperStyle = {
   flexGrow: 1,
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  minHeight: 'calc(100vh - 120px)', 
+  width: '100%',
+  maxWidth: '1200px',
+  margin: '0 auto',
   padding: '20px',
   boxSizing: 'border-box',
 };
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // Lexojmë token nga localStorage kur komponenti ngarkohet për të vendosur gjendjen fillestare
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    return !!localStorage.getItem('token');
+  });
 
-  const handleLoginSuccess = () => setIsLoggedIn(true);
-  const handleLogout = () => setIsLoggedIn(false);
+  // Kur login suksesshëm, ruajmë tokenin dhe aktivizojmë gjendjen
+  const handleLoginSuccess = (token) => {
+    localStorage.setItem('token', token);
+    setIsLoggedIn(true);
+  };
+
+  // Kur bëhet logout, fshijmë tokenin dhe çaktivizojmë gjendjen
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsLoggedIn(false);
+  };
 
   return (
     <div style={appContainerStyle}>
