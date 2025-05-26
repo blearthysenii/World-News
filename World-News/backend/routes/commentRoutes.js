@@ -1,29 +1,42 @@
 const express = require('express');
 const router = express.Router();
 const Comment = require('../models/Comment');
+const authMiddleware = require('../middleware/authMiddleware'); 
 
-// Shto koment
-router.post('/add', async (req, res) => {
+
+router.post('/add', authMiddleware, async (req, res) => {
   const { content, newsId } = req.body;
 
-  // Kontrollo nëse ka content, newsId dhe user i loguar (req.user duhet të vijë nga middleware)
-  if (!content || !newsId || !req.user) {
-    return res.status(400).send('All fields required or user not logged in');
+  if (!content || !newsId) {
+    return res.status(400).json({ message: 'Content and newsId are required' });
   }
 
   try {
     const newComment = new Comment({
-      content,
-      newsId,
-      authorId: req.user.id, // Merr id-në nga token JWT e verifikuar
-    });
+  content,
+  newsId,
+  user: req.user.id  
+});
 
-    await newComment.save();
-    res.redirect(`/news/${newsId}`);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Failed to add comment');
+
+
+     await newComment.save();
+    res.status(201).json(newComment);
+  } catch (error) {
+    console.warn("Error saving comment:", error);
+    res.status(500).json({ error: "Failed to save comment." });
   }
 });
+
+router.get('/:newsId', async (req, res) => {
+  try {
+    const comments = await Comment.find({ newsId: req.params.newsId }).populate('user', 'username'); 
+    res.json(comments);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch comments." });
+  }
+});
+
+
 
 module.exports = router;

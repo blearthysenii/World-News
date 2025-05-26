@@ -8,6 +8,12 @@ import NewsDetails from './components/NewsDetails';
 import Comments from './components/Comments';
 import Login from './components/Login';
 import Register from './components/Register';
+import { useParams } from 'react-router-dom';
+
+function CommentsWrapper() {
+  const { id } = useParams(); // merr ID nga URL
+  return <Comments newsId={id} />; // ia dërgon si props
+}
 
 const appContainerStyle = {
   display: 'flex',
@@ -73,11 +79,12 @@ function App() {
               }
             />
             <Route
-              path="/comments/:id"
-              element={
-                isLoggedIn ? <Comments /> : <Navigate to="/login" replace />
-              }
-            />
+  path="/comments/:id"
+  element={
+    isLoggedIn ? <CommentsWrapper /> : <Navigate to="/login" replace />
+  }
+/>
+
             <Route
               path="/"
               element={<Navigate to={isLoggedIn ? "/news" : "/login"} replace />}

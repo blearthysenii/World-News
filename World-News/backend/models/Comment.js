@@ -1,24 +1,13 @@
 const mongoose = require('mongoose');
 
 const commentSchema = new mongoose.Schema({
-  content: {
-    type: String,
-    required: true,
-  },
-  newsId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'News',
-    required: true,
-  },
-  authorId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+  content: { type: String, required: true },
+  newsId: { type: mongoose.Schema.Types.ObjectId, ref: 'News', required: true },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  createdAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('Comment', commentSchema);
+const Comment = mongoose.model('Comment', commentSchema);
+
+module.exports = Comment;
+

@@ -15,7 +15,7 @@ router.post('/', authMiddleware, async (req, res) => {
 
     if (!title || !content || !category) {
       return res.status(400).json({ message: 'Please provide title, content, and category' });
-    }
+    }z
 
     const news = new News({
       authorId: req.user.id, // nga tokeni
